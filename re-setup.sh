@@ -1,5 +1,5 @@
 #!/bin/bash
 ./cleaner.sh
-./set.sh
+./setup.sh
 docker-compose up -d
 docker ps -a
