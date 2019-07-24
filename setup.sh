@@ -115,7 +115,7 @@ cat >> genesis.json <<EOF
   },
   "difficulty": "0x0",
   "extraData": "0x0000000000000000000000000000000000000000000000000000000000000000",
-  "gasLimit": "0xE0000000",
+  "gasLimit": "0xFFFFFFFFFFFFFFFF",
   "mixhash": "0x00000000000000000000000000000000000000647572616c65787365646c6578",
   "nonce": "0x0",
   "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
@@ -223,7 +223,7 @@ x-quorum-def:
       GETH_ARGS_raft="--raft --raftport 50400"
       GETH_ARGS_istanbul="--emitcheckpoints --istanbul.blockperiod 1 --mine --minerthreads 1 --syncmode full"
       geth --datadir \$\${DDIR} init \$\${GENESIS_FILE}
-      geth \\
+      nohup geth \\
         --identity node\$\${NODE_ID}-\${QUORUM_CONSENSUS:-istanbul} \\
         --datadir \$\${DDIR} \\
         --permissioned \\
@@ -237,7 +237,10 @@ x-quorum-def:
         --port 21000 \\
         --unlock 0 \\
         --password \$\${DDIR}/passwords.txt \\
-        \$\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}}
+        --miner.gaslimit 18446744073709551615 \\
+        --miner.gastarget 18446744073709551615 \\
+        \$\${GETH_ARGS_\${QUORUM_CONSENSUS:-istanbul}} \\
+        2>>\$\${DDDIR}/geth.log
 x-tx-manager-def:
   &tx-manager-def
   image: "\${QUORUM_TX_MANAGER_DOCKER_IMAGE:-quorumengineering/tessera:0.9}"
